@@ -31,10 +31,10 @@ const onSubmit = () => {
 </script>
 <template>
   <div class="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8">
-    <div class="sm:mx-auto sm:w-full sm:max-w-md">
+    <div class="sm:mx-auto sm:w-full sm:max-w-md py-8">
       <img
         class="mx-auto h-12 w-auto"
-        src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+        src="/beehive-logo.png"
         alt="Your Company"
       />
       <h2
@@ -44,7 +44,7 @@ const onSubmit = () => {
       </h2>
     </div>
 
-    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-sm">
       <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
         <Alert
           v-if="alert.type"

@@ -4,6 +4,7 @@ import { routes } from "./routers/index.js";
 import { createRouter, createWebHistory } from "vue-router";
 import ApiService from "./services/api.service.js";
 import { StorageService } from "./services/storage.service.js";
+import vClickOutside from "click-outside-vue3";
 import "./style.css";
 import App from "./App.vue";
 
@@ -42,5 +43,6 @@ router.beforeEach((to, from, next) => {
 
 app.use(router);
 app.use(pinia);
+app.use(vClickOutside);
 
 app.mount("#app");
