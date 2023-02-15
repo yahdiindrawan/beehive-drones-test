@@ -3,8 +3,8 @@ import { StorageService } from "./storage.service";
 
 const options = {
   headers: {
-    Accept: "application/vnd.api+json",
-    "Content-Type": "application/vnd.api+json",
+    Accept: "application/json",
+    "Content-Type": "application/json",
     "cache-control": "no-cache",
   },
 };
@@ -18,8 +18,8 @@ const ApiService = {
 
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
-          config.headers["Content-Type"] = "application/vnd.api+json";
-          config.headers["Accept"] = "application/vnd.api+json";
+          config.headers["Content-Type"] = "application/json";
+          config.headers["Accept"] = "application/json";
         }
 
         return config;
@@ -45,8 +45,8 @@ const ApiService = {
     axios.defaults.headers.common[
       "Authorization"
     ] = `Bearer ${StorageService.getToken()}`;
-    axios.defaults.headers.common["Content-Type"] = "application/vnd.api+json";
-    axios.defaults.headers.common["Accept"] = "application/vnd.api+json";
+    axios.defaults.headers.common["Content-Type"] = "application/json";
+    axios.defaults.headers.common["Accept"] = "application/json";
 
     axios.interceptors.response.use(null, (error) => {
       if (error.response.status == 401) {
@@ -69,8 +69,8 @@ const ApiService = {
     return axios.post(resource, data, options);
   },
 
-  patch(resource, data, options) {
-    return axios.patch(resource, data, options);
+  put(resource, data, options) {
+    return axios.put(resource, data, options);
   },
 
   delete(resource) {

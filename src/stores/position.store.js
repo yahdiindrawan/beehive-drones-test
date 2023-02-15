@@ -10,6 +10,9 @@ export const usePositionStore = defineStore("PositionStore", {
         total: null,
       },
     },
+    position: {
+      data: {},
+    },
     error: null,
   }),
   getters: {
@@ -23,6 +26,36 @@ export const usePositionStore = defineStore("PositionStore", {
         );
         this.positions = response.data;
         return response.data;
+      } catch (error) {
+        this.error = error.response.data;
+      }
+    },
+    async createPosition(payload) {
+      try {
+        const response = await ApiService.post(`/positions/create`, payload);
+        this.position = response.data;
+        return response.data;
+      } catch (error) {
+        this.error = error.response.data;
+      }
+    },
+    async updatePosition(payload) {
+      try {
+        const response = await ApiService.put(
+          `/positions/update/${payload._id}`,
+          payload.data
+        );
+        this.position = response.data;
+        return response.data;
+      } catch (error) {
+        this.error = error.response.data;
+      }
+    },
+    async deletePosition({ id }) {
+      try {
+        const response = await ApiService.delete(`/positions/delete/${id}`);
+        this.position = response.data;
+        return true;
       } catch (error) {
         this.error = error.response.data;
       }
