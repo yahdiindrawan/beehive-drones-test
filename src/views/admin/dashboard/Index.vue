@@ -1,3 +1,50 @@
+<script setup>
+import { computed, onMounted } from "@vue/runtime-core";
+import { usePositionStore } from "@/stores/position.store";
+import { useEmployeeStore } from "@/stores/employee.store";
+import { useSalaryStore } from "@/stores/salary.store";
+
+const positionStore = usePositionStore();
+const employeeStore = useEmployeeStore();
+const salaryStore = useSalaryStore();
+
+onMounted(() => {
+  positionStore
+    .fetchPositions({
+      pageNumber: 1,
+      pageSize: 1,
+    })
+    .then((response) => {
+      console.log(response);
+    });
+  employeeStore
+    .fetchEmployees({
+      pageNumber: 1,
+      pageSize: 1,
+    })
+    .then((response) => {
+      console.log(response);
+    });
+  salaryStore
+    .fetchSalaries({
+      pageNumber: 1,
+      pageSize: 1,
+    })
+    .then((response) => {
+      console.log(response);
+    });
+});
+
+const getPositions = computed(() => {
+  return positionStore.getPositions;
+});
+const getEmployees = computed(() => {
+  return employeeStore.getEmployees;
+});
+const getSalaries = computed(() => {
+  return salaryStore.getSalaries;
+});
+</script>
 <template>
   <div class="mt-2 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
     <div class="overflow-hidden rounded-lg bg-white shadow">
@@ -26,7 +73,9 @@
                 Positions
               </dt>
               <dd>
-                <div class="text-lg font-medium text-gray-900">5</div>
+                <div class="text-lg font-medium text-gray-900">
+                  {{ getPositions.data.total }}
+                </div>
               </dd>
             </dl>
           </div>
@@ -69,7 +118,9 @@
                 Employees
               </dt>
               <dd>
-                <div class="text-lg font-medium text-gray-900">30</div>
+                <div class="text-lg font-medium text-gray-900">
+                  {{ getEmployees.data.total }}
+                </div>
               </dd>
             </dl>
           </div>
@@ -112,7 +163,9 @@
                 Salaries
               </dt>
               <dd>
-                <div class="text-lg font-medium text-gray-900">10</div>
+                <div class="text-lg font-medium text-gray-900">
+                  {{ getSalaries.data.total }}
+                </div>
               </dd>
             </dl>
           </div>
