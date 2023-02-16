@@ -10,6 +10,9 @@ export const useSalaryStore = defineStore("SalaryStore", {
         total: null,
       },
     },
+    salary: {
+      data: {},
+    },
     error: null,
   }),
   getters: {
@@ -23,6 +26,36 @@ export const useSalaryStore = defineStore("SalaryStore", {
         );
         this.salaries = response.data;
         return response.data;
+      } catch (error) {
+        this.error = error.response.data;
+      }
+    },
+    async createSalary(payload) {
+      try {
+        const response = await ApiService.post(`/sallarys/create`, payload);
+        this.salary = response.data;
+        return response.data;
+      } catch (error) {
+        this.error = error.response.data;
+      }
+    },
+    async updateSalary(payload) {
+      try {
+        const response = await ApiService.put(
+          `/sallarys/update/${payload._id}`,
+          payload.data
+        );
+        this.salary = response.data;
+        return response.data;
+      } catch (error) {
+        this.error = error.response.data;
+      }
+    },
+    async deleteSalary({ id }) {
+      try {
+        const response = await ApiService.delete(`/sallarys/delete/${id}`);
+        this.salary = response.data;
+        return true;
       } catch (error) {
         this.error = error.response.data;
       }

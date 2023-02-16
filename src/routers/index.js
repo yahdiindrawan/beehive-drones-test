@@ -5,7 +5,7 @@ import Admin from "./admin";
 
 export const routes = [
   {
-    path: "/login",
+    path: "/",
     component: Login,
     meta: {
       title: "Login",

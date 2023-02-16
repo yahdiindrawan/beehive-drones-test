@@ -35,7 +35,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.meta.auth && !StorageService.getToken()) {
-    next("/login");
+    next("/");
   } else {
     next();
   }

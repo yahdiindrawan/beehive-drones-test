@@ -1,10 +1,12 @@
 <script setup>
 import { reactive, ref } from "@vue/reactivity";
+import { useEmployeeStore } from "@/stores/employee.store";
 import { usePositionStore } from "@/stores/position.store";
 import { computed, onMounted } from "vue";
 import { TrashIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
 import { Pagination } from "@/components/atoms";
 
+const employeeStore = useEmployeeStore();
 const positionStore = usePositionStore();
 
 const form = reactive({
@@ -12,8 +14,12 @@ const form = reactive({
   pageSize: 10,
   isModal: false,
   _id: null,
-  code: null,
+  nik: null,
   name: null,
+  address: null,
+  phone: null,
+  email: null,
+  position_id: null,
 });
 const columns = reactive([
   {
@@ -21,12 +27,28 @@ const columns = reactive([
     name: "no",
   },
   {
-    label: "Code",
-    name: "code",
+    label: "NIK",
+    name: "nik",
   },
   {
     label: "Name",
     name: "name",
+  },
+  {
+    label: "Address",
+    name: "address",
+  },
+  {
+    label: "Phone",
+    name: "phone",
+  },
+  {
+    label: "Email",
+    name: "email",
+  },
+  {
+    label: "Position",
+    name: "position_name",
   },
   {
     label: "Actions",
@@ -35,23 +57,27 @@ const columns = reactive([
 ]);
 
 onMounted(() => {
-  positionStore
-    .fetchPositions({
+  employeeStore
+    .fetchEmployees({
       pageNumber: form.currentPage,
       pageSize: form.pageSize,
     })
     .then((response) => {
       console.log(response);
     });
+  positionStore.fetchAllPositions();
 });
 
+const getEmployees = computed(() => {
+  return employeeStore.getEmployees;
+});
 const getPositions = computed(() => {
   return positionStore.getPositions;
 });
 
 const handlePage = (page) => {
   form.currentPage = page;
-  positionStore.fetchPositions({
+  employeeStore.fetchEmployees({
     pageNumber: page,
     pageSize: 10,
   });
@@ -64,26 +90,42 @@ const handlePage = (page) => {
 
 const openAddModal = () => {
   form.isModal = true;
-  form._id = form.code = form.name = null;
+  form._id =
+    form.nik =
+    form.name =
+    form.address =
+    form.phone =
+    form.email =
+    form.position_id =
+      null;
 };
 
 const openEditModal = (data) => {
   form.isModal = true;
   form._id = data._id;
-  form.code = data.code;
+  form.nik = data.nik;
   form.name = data.name;
+  form.address = data.address;
+  form.phone = data.phone;
+  form.email = data.email;
+  form.position_id = data.position_id._id;
 };
 
-const addPosition = () => {
+const addEmployee = () => {
   const payload = {
-    code: form.code,
+    nik: form.nik,
     name: form.name,
+    address: form.address,
+    phone: form.phone,
+    email: form.email,
+    position_id: form.position_id,
   };
-  positionStore.createPosition(payload).then((response) => {
+  console.log(payload);
+  employeeStore.createEmployee(payload).then((response) => {
     if (response) {
       form.currentPage = 1;
-      positionStore
-        .fetchPositions({
+      employeeStore
+        .fetchEmployees({
           pageNumber: form.currentPage,
           pageSize: form.pageSize,
         })
@@ -97,19 +139,23 @@ const addPosition = () => {
   });
 };
 
-const editPosition = () => {
+const editEmployee = () => {
   const payload = {
     _id: form._id,
     data: {
-      code: form.code,
+      nik: form.nik,
       name: form.name,
+      address: form.address,
+      phone: form.phone,
+      email: form.email,
+      position_id: form.position_id,
     },
   };
-  positionStore.updatePosition(payload).then((response) => {
+  employeeStore.updateEmployee(payload).then((response) => {
     if (response) {
       form.currentPage = 1;
-      positionStore
-        .fetchPositions({
+      employeeStore
+        .fetchEmployees({
           pageNumber: form.currentPage,
           pageSize: form.pageSize,
         })
@@ -123,12 +169,12 @@ const editPosition = () => {
   });
 };
 
-const removePosition = (id) => {
-  positionStore.deletePosition({ id }).then((response) => {
+const removeEmployee = (id) => {
+  employeeStore.deleteEmployee({ id }).then((response) => {
     if (response) {
       form.currentPage = 1;
-      positionStore
-        .fetchPositions({
+      employeeStore
+        .fetchEmployees({
           pageNumber: form.currentPage,
           pageSize: form.pageSize,
         })
@@ -146,7 +192,7 @@ const removePosition = (id) => {
     <h1
       class="text-3xl mb-8 font-bold leading-tight tracking-tight text-gray-900"
     >
-      Positions
+      Employees
     </h1>
     <div class="overflow-x-auto px-2">
       <button
@@ -154,7 +200,7 @@ const removePosition = (id) => {
         type="button"
         class="inline-flex my-2 justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:col-start-2 sm:text-sm"
       >
-        Add Position
+        Add Employee
       </button>
       <div class="inline-block min-w-full py-2 align-middle">
         <div
@@ -174,11 +220,11 @@ const removePosition = (id) => {
               </tr>
             </thead>
             <tbody
-              v-if="getPositions.data?.results?.length > 0"
+              v-if="getEmployees.data?.results?.length > 0"
               class="divide-y divide-gray-200 bg-white"
             >
               <tr
-                v-for="(data, index) in getPositions.data.results"
+                v-for="(data, index) in getEmployees.data.results"
                 :key="data.id"
               >
                 <td
@@ -187,10 +233,22 @@ const removePosition = (id) => {
                   {{ (form.currentPage - 1) * form.pageSize + (index + 1) }}
                 </td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                  {{ data.code }}
+                  {{ data.nik }}
                 </td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                   {{ data.name }}
+                </td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                  {{ data.address }}
+                </td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                  {{ data.phone }}
+                </td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                  {{ data.email }}
+                </td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                  {{ data.position_id?.name }}
                 </td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                   <div class="flex divide-x-2">
@@ -204,7 +262,7 @@ const removePosition = (id) => {
                       />
                     </button>
                     <button
-                      @click="removePosition(data._id)"
+                      @click="removeEmployee(data._id)"
                       type="button"
                       class="pl-3"
                     >
@@ -235,7 +293,7 @@ const removePosition = (id) => {
                       />
                     </svg>
                     <h4 class="text-base font-semibold">
-                      Sepertinya belum ada daftar posisi.
+                      Sepertinya belum ada daftar karyawan.
                     </h4>
                     <p class="text-sm text-gray-500">
                       Klik tombol tambah untuk menambah data
@@ -247,7 +305,7 @@ const removePosition = (id) => {
           </table>
         </div>
         <Pagination
-          :total="getPositions.data.total"
+          :total="getEmployees.data.total"
           :perPage="form.pageSize"
           :currentPage="form.currentPage"
           @pagechanged="handlePage"
@@ -280,23 +338,22 @@ const removePosition = (id) => {
                   class="text-lg font-medium leading-6 text-gray-900"
                   id="modal-title"
                 >
-                  {{ form._id ? "Update" : "Add" }} Position
+                  {{ form._id ? "Update" : "Add" }} Employee
                 </h3>
-                <form @submit.prevent="addPosition" class="mt-8 mb-4 space-y-6">
+                <form @submit.prevent="addEmployee" class="mt-8 mb-4 space-y-6">
                   <div>
                     <label
-                      for="code"
+                      for="nik"
                       class="block text-sm text-left font-medium text-gray-700"
                     >
-                      Code
+                      NIK
                     </label>
                     <div class="mt-1">
                       <input
-                        id="code"
-                        v-model="form.code"
-                        name="code"
+                        id="nik"
+                        v-model="form.nik"
+                        name="nik"
                         type="text"
-                        required
                         class="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                       />
                     </div>
@@ -315,9 +372,87 @@ const removePosition = (id) => {
                         v-model="form.name"
                         name="name"
                         type="text"
-                        required
                         class="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                       />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label
+                      for="address"
+                      class="block text-sm text-left font-medium text-gray-700"
+                    >
+                      Address
+                    </label>
+                    <div class="mt-1">
+                      <textarea
+                        id="address"
+                        v-model="form.address"
+                        name="address"
+                        type="text"
+                        class="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                      ></textarea>
+                    </div>
+                  </div>
+                  <div>
+                    <label
+                      for="phone"
+                      class="block text-sm text-left font-medium text-gray-700"
+                    >
+                      Phone
+                    </label>
+                    <div class="mt-1">
+                      <input
+                        id="phone"
+                        v-model="form.phone"
+                        name="phone"
+                        type="text"
+                        class="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label
+                      for="email"
+                      class="block text-sm text-left font-medium text-gray-700"
+                    >
+                      Email
+                    </label>
+                    <div class="mt-1">
+                      <input
+                        id="email"
+                        v-model="form.email"
+                        name="email"
+                        type="email"
+                        class="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label
+                      for="name"
+                      class="block text-sm text-left font-medium text-gray-700"
+                    >
+                      Position
+                    </label>
+                    {{ getPositions.data.results }}
+                    <div class="mt-1">
+                      <select
+                        v-model="form.position_id"
+                        id="position"
+                        name="position"
+                        autocomplete="position-name"
+                        class="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                      >
+                        <option disabled>Choose Option</option>
+                        <option
+                          v-for="position in getPositions.data"
+                          :key="position._id"
+                          :value="position._id"
+                        >
+                          {{ position.name }}
+                        </option>
+                      </select>
                     </div>
                   </div>
                   <div
@@ -325,7 +460,7 @@ const removePosition = (id) => {
                   >
                     <button
                       v-if="form._id"
-                      @click="editPosition"
+                      @click="editEmployee"
                       type="button"
                       class="inline-flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:col-start-2 sm:text-sm"
                     >

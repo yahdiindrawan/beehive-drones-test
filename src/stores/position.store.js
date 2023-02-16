@@ -30,6 +30,15 @@ export const usePositionStore = defineStore("PositionStore", {
         this.error = error.response.data;
       }
     },
+    async fetchAllPositions() {
+      try {
+        const response = await ApiService.get(`/positions`);
+        this.positions = response.data;
+        return response.data;
+      } catch (error) {
+        this.error = error.response.data;
+      }
+    },
     async createPosition(payload) {
       try {
         const response = await ApiService.post(`/positions/create`, payload);

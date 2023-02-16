@@ -32,9 +32,11 @@
         @click="onClickPage(page)"
         :disabled="page.isDisabled"
         type="button"
-        class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 border-t-2 pt-4 px-4 inline-flex items-center text-sm font-medium"
+        class="hover:text-gray-700 hover:border-gray-300 border-t-2 pt-4 px-4 inline-flex items-center text-sm font-bold"
         :class="
-          page.name === currentPage ? 'border-blue-500 text-blue-600' : null
+          page.name === currentPage
+            ? 'border-blue-400 text-blue-400'
+            : 'text-gray-500 border-transparent'
         "
       >
         {{ page.name }}
