@@ -1,7 +1,43 @@
-# Vue 3 + Vite
+# ![Login Menu](/public/favicon.png) Beehive Drones Test
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+Tech Stack
 
-## Recommended IDE Setup
+- Vite (Vue3)
+- Pinia
+- Tailwindcss
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+## Menu
+
+<br>
+
+> Login
+
+![Login Menu](/src/assets/documentations/login-menu.png) <br><br>
+
+> Dashboard
+
+![Dashboard Menu](/src/assets/documentations/dashboard.png) <br><br>
+
+> Positions
+
+![Positions Menu](/src/assets/documentations/positions.png) <br><br>
+
+> Position Form
+
+![Position Form](/src/assets/documentations/position-form.png) <br><br>
+
+> Employees
+
+![Employees Menu](/src/assets/documentations/employees.png) <br><br>
+
+> Employee Form
+
+![Employee Form](/src/assets/documentations/employee-form.png) <br><br>
+
+> Salaries
+
+![Salaries Menu](/src/assets/documentations/salaries.png) <br><br>
+
+> Salary Form
+
+![Salary Form](/src/assets/documentations/salary-form.png) <br><br>
