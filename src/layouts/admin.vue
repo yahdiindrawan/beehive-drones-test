@@ -1,13 +1,16 @@
 <script setup>
 import { ref } from "vue";
 import { computed } from "@vue/reactivity";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { StorageService } from "@/services/storage.service";
+import { useAuthStore } from "@/stores/auth.store";
 
 const isPopup = ref(false);
 const isSidebar = ref(true);
 const route = useRoute();
 const me = StorageService.getUser();
+const router = useRouter();
+const authStore = useAuthStore();
 
 const activeClass = (url, mobile) => {
   if (!mobile) {
@@ -23,6 +26,11 @@ const activeClass = (url, mobile) => {
       return "border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 block pl-3 pr-4 py-2 border-l-4 text-base font-medium";
     }
   }
+};
+
+const logout = () => {
+  authStore.logout();
+  router.replace("/");
 };
 </script>
 <template>
@@ -120,15 +128,15 @@ const activeClass = (url, mobile) => {
                 aria-labelledby="user-menu-button"
                 tabindex="-1"
               >
-                <a
-                  href="#"
+                <button
+                  @click="logout"
                   class="block px-4 py-2 text-sm text-gray-700"
                   role="menuitem"
                   tabindex="-1"
                   id="user-menu-item-2"
                 >
                   Sign out
-                </a>
+                </button>
               </div>
             </div>
           </div>
@@ -234,12 +242,12 @@ const activeClass = (url, mobile) => {
             </div>
           </div>
           <div class="mt-3 space-y-1">
-            <a
-              href="#"
+            <button
+              @click="logout"
               class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800"
             >
               Sign out
-            </a>
+            </button>
           </div>
         </div>
       </div>
